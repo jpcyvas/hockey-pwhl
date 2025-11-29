@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 //API used = https://github.com/IsabelleLefebvre97/PWHL-Data-Reference?tab=readme-ov-file
 // standings url = https://lscluster.hockeytech.com/feed/index.php?feed=modulekit&view=statviewtype&stat=conference&type=standings&season_id=8&key=446521baf8c38984&client_code=pwhl
@@ -20,20 +20,14 @@ async function makeAPICall(apiURL) {
     }
 }
 
-async function getStandingsData() {
+export async function getStandingsData() {
     return JSON.stringify(await makeAPICall(hockeyStandingsURL));
 }
 
-async function getLeadersData() {
+export async function getLeadersData() {
     return JSON.stringify(await makeAPICall(hockeyLeadersURL));
-}   
-
-async function getGamesData() {
-    return JSON.stringify(await makeAPICall(hockeyGamesURL));
 }
 
-module.exports = {
-    getStandingsData,
-    getLeadersData,
-    getGamesData
-};
+export async function getGamesData() {
+    return JSON.stringify(await makeAPICall(hockeyGamesURL));
+}

@@ -1,14 +1,9 @@
 name: Daily Update GitHub Pages
 
 on:
-  schedule:
-    - cron: "0 4 * * 2"   # Mondays 23:00 CT (CDT -> UTC 04:00 Tue)
-    - cron: "0 4 * * 5"   # Thursdays 23:00 CT (CDT -> UTC 04:00 Fri)
-    - cron: "30 16 * * 0" # Sundays 11:30 CT (CDT -> UTC 19:30 Sun)
-    - cron: "30 19 * * 0" # Sundays 14:30 CT (CDT -> UTC 19:30 Sun)
-    - cron: "0 23 * * 0"  # Sundays 18:00 CT (CDT -> UTC 23:00 Sun)
-    - cron: "0 3 * * 1"   # Sundays 22:00 CT (CDT -> UTC 03:00 Mon)
-  workflow_dispatch:     # Allows manual trigger
+    schedule:
+        - cron: "0 6 * * *"  # nightly at 00:00 CST (UTC-6 -> 06:00 UTC)
+    workflow_dispatch:     # Allows manual trigger
 
 permissions:
   contents: read

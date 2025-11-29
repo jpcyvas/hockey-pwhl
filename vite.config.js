@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 
 export default defineConfig({
-  // base: '/hockey-pwhl-stats/',
+  base: '/hockey-pwhl/',
   plugins: [
     react(),
     tailwindcss()

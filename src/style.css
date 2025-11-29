@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+
+.fff-body-tag{
+   background-image: url('./img/background-subtle3.png');
+   background-attachment: fixed; 
+}
+
+.fff-body-tag .fff-winners-table .p-datatable-header{
+        background-color: #054778;
+        color:white;
+        text-align: center;
+        font-weight:bold;
+}
+
+.fff-body-tag .fff-losers-table .p-datatable-header{
+        background-color: #c81e28;
+        color:white;
+        text-align: center;
+        font-weight:bold;
+}
+
+.fff-body-tag .fff-winner-stat, .fff-dialog .fff-winner-stat{
+        background-color: #054778;
+        color:white;   
+}
+
+.fff-body-tag .fff-losers-stat, .fff-dialog .fff-losers-stat{
+        background-color: #c81e28;
+        color:white;   
+}
+
+@media only screen and (max-width: 480px) {
+    .fff-dialog{
+        max-width:100vw !important;
+        min-width:0 !important;
+    }
+}
+
+.fff-body-tag .p-tag{
+        background-color: oklch(92.9% 0.013 255.508);
+        color: oklch(30% 0 0);
+}
+
+/* current-global-player */
+.fff-body-tag .fff-winners-table td, .fff-losers-table td{
+        transition: background-color 1.0s ease;
+        background-color: white;
+        font-weight: 400;
+}
+
+
+.fff-body-tag .fff-winners-table .fff-current-global-player td, .fff-losers-table .fff-current-global-player td{
+        background-color: oklch(96.2% 0.059 95.617);
+        font-weight: 500;
+
+}
+
+.fff-body-tag fieldset{
+        transition: box-shadow 1.0s ease, background-color 1.0s ease;
+        box-shadow: var(--shadow-md);
+}
+
+.fff-body-tag legend{
+        transition: background-color 1.0s ease;
+        background-color: #f8f9fa;
+}
+
+.fff-body-tag .fff-current-global-player fieldset{
+        box-shadow: var(--shadow-2xl);  
+        background-color:oklch(96.2% 0.059 95.617);      
+     
+}
+
+.fff-body-tag .fff-current-global-player fieldset legend.p-fieldset-legend{
+        /* background-color:oklch(96.2% 0.059 95.617);       */
+}
+
+.fff-body-tag .p-card{
+        transition: box-shadow 1.0s ease,background-color 1.0s ease;
+        box-shadow: var(--shadow-md);
+}
+
+.fff-body-tag .fff-current-global-player.p-card{
+        box-shadow: var(--shadow-2xl);  
+        background-color:oklch(96.2% 0.059 95.617);      
+}
+
+.fff-body-tag .p-speeddial .p-button.p-button-icon-only.p-button-rounded{
+        border-radius: 3px;
+}
+
+.fff-body-tag .p-dock .p-dock-container {
+        overflow: visible !important;
+}
+
+.fff-body-tag .p-dock .p-dock-container .p-dock-list{
+        background: rgba(0, 0, 0, 0.4);
+        /* border: 1px solid rgba(0, 0, 0, 0.5); */
+        padding: 0.5rem 0.5rem;
+        border-radius: 12px;
+        overflow: visible !important;
+}
+
+.fff-body-tag .p-dock .p-dock-item .p-avatar{
+        background-image: linear-gradient(-180deg, #054778 0%, #086EBA 100%);
+        border-radius: 4px;
+        font-size:1.75rem !important;
+        box-sizing: border-box;
+        color: #FFFFFF;
+        display: flex;
+        justify-content: center;
+        padding: 1rem 1.75rem;
+        text-decoration: none;
+        width: 100%;
+        border: 0;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        box-shadow: var(--shadow-md);  
+        overflow: visible;
+
+        
+}
+
+.fff-body-tag .p-dock .p-dock-item .p-avatar:hover{
+          background-image: linear-gradient(-180deg, #086EBA 0%, #0A88E6 100%);
+}
+
+.fff-body-tag .p-dock .p-dock-item .p-speeddial > .p-button{
+        background-image: linear-gradient(-180deg, #054778 0%, #086EBA 100%);
+        border-radius: 3px;
+        outline: none; 
+        color: #FFFFFF;
+        border: 0;
+        bottom:-2px;
+}
+
+.fff-body-tag .p-dock .p-dock-item .p-speeddial > .p-button:hover{
+          background-image: linear-gradient(-180deg, #086EBA 0%, #0A88E6 100%);
+}
+
+
+.fff-body-tag .p-dock .p-dock-item .p-speeddial .p-button:first-of-type .pi{
+        font-size:1.75rem;
+}
+
+.fff-body-tag .p-dock .p-dock-item .p-speeddial .p-button:focus{
+        box-shadow: 0;
+}
+

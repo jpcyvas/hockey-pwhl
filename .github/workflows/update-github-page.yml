@@ -1,0 +1,51 @@
+name: Daily Update GitHub Pages
+
+on:
+  schedule:
+    - cron: "0 4 * * 2"   # Mondays 23:00 CT (CDT -> UTC 04:00 Tue)
+    - cron: "0 4 * * 5"   # Thursdays 23:00 CT (CDT -> UTC 04:00 Fri)
+    - cron: "30 16 * * 0" # Sundays 11:30 CT (CDT -> UTC 19:30 Sun)
+    - cron: "30 19 * * 0" # Sundays 14:30 CT (CDT -> UTC 19:30 Sun)
+    - cron: "0 23 * * 0"  # Sundays 18:00 CT (CDT -> UTC 23:00 Sun)
+    - cron: "0 3 * * 1"   # Sundays 22:00 CT (CDT -> UTC 03:00 Mon)
+  workflow_dispatch:     # Allows manual trigger
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+    
+        steps: 
+        -   name: Checkout Repository to start
+            uses: actions/checkout@v4
+
+        -   name: Setup Node.js
+            uses: actions/setup-node@v4
+            with:
+                node-version: '18'
+
+        -   name: Install Dependencies
+            run: npm install
+
+        -   name: Fetch PWHL data and write JSON files to public
+            run: |
+                node -e "(async ()=>{ try { const fs=require('fs'); const path=require('path'); const svc=require('./services/hockey-stats'); const outDir=path.join('public'); fs.mkdirSync(outDir,{recursive:true}); const s=await svc.getStandingsData(); fs.writeFileSync(path.join(outDir,'data.json'), s, 'utf8'); const l=await svc.getLeadersData(); fs.writeFileSync(path.join(outDir,'data2.json'), l, 'utf8'); const g=await svc.getGamesData(); fs.writeFileSync(path.join(outDir,'data3.json'), g, 'utf8'); console.log('Wrote data.json, data2.json, data3.json to', outDir);} catch(e){ console.error(e); process.exit(1);} })()"
+
+        -   name: Build React App
+            run: npm run build
+
+        -   name: Setup Pages
+            uses: actions/configure-pages@v5
+        
+        -   name: Upload artifact
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: ./dist
+        
+        -   name: Deploy to GitHub Pages
+            id: deployment
+            uses: actions/deploy-pages@v4

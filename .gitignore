@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+
+# Production build
+dist/
+
+# Local env files
+.env
+.env.local
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+npm-debug.log*
+
+# Coverage
+coverage/
+
+# Misc
+.idea/

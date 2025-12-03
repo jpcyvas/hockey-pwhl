@@ -14,6 +14,7 @@ export default function App() {
   const [standings, setStandings] = useState(null);
   const [leadersPoints, setLeadersPoints] = useState(null);
   const [games, setGames] = useState(null);
+  const [tableSize, setTableSize] = useState('');
   const [dateSelected, setDateSelected] = useState(null);
 
   const teamMapping = {
@@ -80,28 +81,42 @@ export default function App() {
   const playerNameTemplate = (rowData) => {
     return (
       // use Tailwind flex + items-center to vertically center the text with the image
-      <div className="flex items-center gap-2">
-        <img alt={rowData.name} src={rowData.photo} className="h-15 w-15 object-cover rounded" />
-        <span>{rowData.name}</span>
+      <div className="flex items-center gap-2 min-w-0">
+        <img
+          alt={rowData.name}
+          src={rowData.photo}
+          className="w-7 h-7 sm:w-10 sm:h-10 md:w-16 md:h-16 object-cover rounded flex-shrink-0"
+        />
+        <span className="truncate">{rowData.name}</span>
       </div>
     );
   };
 
   const playerTeamTemplate = (rowData) => {
     return (
-      <div className="flex items-center gap-2"> 
-        <img alt={rowData.team_name} src={rowData.logo} className="h-15 w-15 object-cover rounded-full" />
-        <span>{rowData.team_name}</span>
+      <div className="flex items-center gap-2 min-w-0"> 
+        <img
+          alt={rowData.team_name}
+          src={rowData.logo}
+          className="w-6 h-6 sm:w-10 sm:h-10 md:w-16 md:h-16 object-cover rounded-full flex-shrink-0"
+        />
+        {/* keep team name hidden in narrow UIs; if shown, it will truncate */}
       </div>
     );
   }
 
   const teamDisplayTemplate = (rowData) => {
     return (
-      <div className="flex items-center gap-2"> 
-        <img alt={rowData.team_name} src={"https://assets.leaguestat.com/pwhl/logos/"+rowData.team_id+".png"} className="h-15 w-15 object-cover" />
-        <span>{rowData.team_name}</span>
-      </div>
+      <div>
+        <div className="flex items-center gap-2 min-w-0"> 
+          <img
+            alt={rowData.team_name}
+            src={"https://assets.leaguestat.com/pwhl/logos/" + rowData.team_id + ".png"}
+            className="w-6 h-6 sm:w-10 sm:h-10 md:w-16 md:h-16 object-cover flex-shrink-0"
+          />
+          <span className="truncate">{rowData.team_name}</span>
+        </div>
+      </div>      
     );
   }
 
@@ -157,6 +172,24 @@ export default function App() {
   }, [])
 
 
+  // responsive DataTable size: use 'small' for narrow viewports
+  useEffect(() => {
+    const checkSize = () => {
+      try {
+        const w = window.innerWidth || document.documentElement.clientWidth || 0;
+        // Tailwind 'sm' breakpoint is 640px — use that as threshold
+        setTableSize(w < 640 ? 'small' : '');
+      } catch (e) {
+        setTableSize('');
+      }
+    };
+
+    checkSize();
+    window.addEventListener('resize', checkSize);
+    return () => window.removeEventListener('resize', checkSize);
+  }, []);
+
+
   // filter games to only those matching the selected date (by day)
   const displayedGames = (games || []).filter((game) => {
     if (!dateSelected) return false
@@ -183,8 +216,8 @@ export default function App() {
 
          <div className="flex-auto">
               <ButtonGroup>
-                <Button icon="pi pi-angle-double-left" onClick={() => decreaseSelectedDate()}/>
-                <Button icon="pi pi-angle-double-right" onClick={() => increaseSelectedDat()}/>
+                <Button icon="pi pi-angle-double-left" onClick={() => decreaseSelectedDate()} />
+                <Button icon="pi pi-angle-double-right" onClick={() => increaseSelectedDat()} />
               </ButtonGroup>
               <Calendar id="buttondisplay" value={dateSelected} onChange={(e) => setDateSelected(e.value)} showIcon />
           </div>
@@ -229,7 +262,7 @@ export default function App() {
 
           {displayedGames.length === 0 && (
            <Card className={'shadow-md'}> 
-            No Games on This Date <br/><br/>
+            No games on this date <br/><br/>
            <Divider></Divider>
            <div className='p-1'>
               <div className="flex items-center gap-2">
@@ -257,15 +290,17 @@ export default function App() {
 
 
         {/* Start Standings */}
-        <DataTable value={displayedStandings}  header="Overall Standings" sortField="points" sortOrder={-1} className="shadow-md">
-          <Column field="name" header="Name" body={teamDisplayTemplate}></Column>
-          <Column field="points" header="Points"></Column>
-          <Column field="games_played" header="Games Played"></Column>
-          <Column field="wins" header="Wins"></Column>
-          <Column field="ot_wins" header="OT Wins"></Column>
-          <Column field="ot_losses" header="OT Losses"></Column>
-          <Column field="losses" header="Losses"></Column>
-          <Column field="ties" header="Ties"></Column>
+  <DataTable value={displayedStandings}  header="Overall Standings" sortField="points" sortOrder={-1} className="shadow-md" size={tableSize}>
+          <Column field="name" header="" body={teamDisplayTemplate}></Column>
+          <Column field="points" header="Pts"></Column>
+          <Column field="games_played" header="G"></Column>
+          <Column field="wins" header="W"></Column>
+          <Column field="ot_wins" header="OtW"></Column>
+          <Column field="ot_losses" header="OtL"></Column>
+          <Column field="losses" header="L"></Column>
+          <Column field="ties" header="T"></Column>
+          <Column field="goals_for" header="GF"></Column>
+          <Column field="goals_against" header="GA"></Column>
         </DataTable>
         {/* End Standings */}
 
@@ -273,12 +308,12 @@ export default function App() {
         {/* Leaders Section */}
 
         {/* Points Leaders */}
-        <DataTable value={leadersPoints}  header="Points Leaders" sortField="points" sortOrder={-1} className="shadow-md mt-4">
-          <Column field="name" header="Player Name" body={playerNameTemplate}></Column>
+  <DataTable value={leadersPoints}  header="Points Leaders" sortField="points" sortOrder={-1} className="shadow-md mt-4" size={tableSize}>
+          <Column field="name" header="Player" body={playerNameTemplate}></Column>
           <Column field="team_name" header="Team" body={playerTeamTemplate}></Column>
-          <Column field="points" header="Points"></Column>
-          <Column field="goals" header="Goals"></Column>
-          <Column field="assists" header="Assists"></Column>
+          <Column field="points" header="Pts"></Column>
+          <Column field="goals" header="G"></Column>
+          <Column field="assists" header="A"></Column>
         </DataTable>
         {/* End Points Leaders */}
 

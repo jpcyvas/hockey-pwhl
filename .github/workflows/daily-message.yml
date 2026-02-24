@@ -33,7 +33,7 @@ jobs:
         id: get_schedule
         run: |
           # call getDailySchedule() from hockey-stats.js
-          node -e "import('./services/hockey-stats.js').then(m=>m.getDailySchedule().then(d=>console.log(JSON.stringify(d, null, 2))).catch(err=>{ console.error(err); process.exit(1); }))" > schedule.txt
+          node -e "import('./services/hockey-stats.js').then(m=>m.getDailySchedule().then(d=>console.log(d)).catch(err=>{ console.error(err); process.exit(1); }))" > schedule.txt
           # expose the file contents as a multiline GitHub Actions output
           echo "schedule<<EOF" >> $GITHUB_OUTPUT
           cat schedule.txt >> $GITHUB_OUTPUT

@@ -50,7 +50,6 @@ export async function getDailySchedule() {
 
     //get the games for today
     var dateToday = getTodaysDate();
-    console.log(dateToday);
 
     const todaysGames = dataSchedule.SiteKit.Scorebar.filter(game => game.GameDateISO8601.split('T')[0] === dateToday);
 

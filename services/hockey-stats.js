@@ -23,8 +23,6 @@ async function makeAPICall(apiURL) {
 function getTodaysDate() {
     // produce YYYY-MM-DD in US Central time
     const now = new Date();
-    now.setDate(28);
-    now.setDate(now.getDate() + 1);
     return now.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 }
 

@@ -13,6 +13,7 @@ on:
             options:
             - Test
             - WonderPals
+            - Lolo
 
 jobs:
   daily-message:
@@ -53,6 +54,8 @@ jobs:
             echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> $GITHUB_ENV
           elif [ "$selection" = "WonderPals" ]; then
             echo "DISCORD_WEBHOOK=${{ secrets.WEBHOOK_DISCORD_WONDERPALS_HOCKEY }}" >> $GITHUB_ENV
+          elif [ "$selection" = "Lolo" ]; then
+            echo "DISCORD_WEBHOOK=${{ secrets.WEBHOOK_DISCORD_LOLO }}" >> $GITHUB_ENV
           else
             echo "Invalid webhook option"
             exit 1
@@ -61,6 +64,16 @@ jobs:
       - name: Discord notification
         env:
             DISCORD_WEBHOOK: ${{ env.DISCORD_WEBHOOK }}
+            DISCORD_USERNAME: PWHL Bot
+            DISCORD_AVATAR: https://assets.leaguestat.com/pwhl/240x240/31.jpg
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "${{ steps.get_schedule.outputs.schedule }}"
+
+      - name: Discord notification 2
+        if: ${{ github.event.inputs.webhook == '' }}
+        env:
+            DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_DISCORD_LOLO }}
             DISCORD_USERNAME: PWHL Bot
             DISCORD_AVATAR: https://assets.leaguestat.com/pwhl/240x240/31.jpg
         uses: Ilshidur/action-discord@master

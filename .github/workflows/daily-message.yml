@@ -1,0 +1,68 @@
+name: Daily Hockey Message
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+        webhook:
+            description: 'Discord'
+            required: true
+            default: WonderPals
+            type: choice
+            options:
+            - Test
+            - WonderPals
+
+jobs:
+  daily-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get schedule
+        id: get_schedule
+        run: |
+          # call getDailySchedule() from hockey-stats.js
+          node -e "import('./services/hockey-stats.js').then(m=>m.getDailySchedule().then(d=>console.log(JSON.stringify(d, null, 2))).catch(err=>{ console.error(err); process.exit(1); }))" > schedule.txt
+          # expose the file contents as a multiline GitHub Actions output
+          echo "schedule<<EOF" >> $GITHUB_OUTPUT
+          cat schedule.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Select enviorment
+        run: |
+          # read the webhook input (empty string for schedule runs)
+          selection="${{ github.event.inputs.webhook }}"
+
+          # fallback to WonderPals when no input was provided (cron run)
+          if [ -z "$selection" ]; then
+            selection="WonderPals"
+          fi
+
+          if [ "$selection" = "Test" ]; then
+            echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> $GITHUB_ENV
+          elif [ "$selection" = "WonderPals" ]; then
+            echo "DISCORD_WEBHOOK=${{ secrets.WEBHOOK_DISCORD_WONDERPALS_HOCKEY }}" >> $GITHUB_ENV
+          else
+            echo "Invalid webhook option"
+            exit 1
+          fi    
+
+      - name: Discord notification
+        env:
+            DISCORD_WEBHOOK: ${{ env.DISCORD_WEBHOOK }}
+            DISCORD_USERNAME: Hockey Bot
+            DISCORD_AVATAR: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlnFcrQXKaFxm6NpM62xqHxRXsJTrsU6sBZ_xTH6QLSjz0j74Fdzor-4c7SF7qTls6364
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "${{ steps.get_schedule.outputs.schedule }}"

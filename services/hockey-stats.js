@@ -20,6 +20,15 @@ async function makeAPICall(apiURL) {
     }
 }
 
+function getTodaysDate() {
+    // produce YYYY-MM-DD in US Central time
+    const now = new Date();
+    now.setDate(28);
+    now.setDate(now.getDate() + 1);
+    return now.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+}
+
+//functions for site
 export async function getStandingsData() {
     return JSON.stringify(await makeAPICall(hockeyStandingsURL));
 }
@@ -30,4 +39,44 @@ export async function getLeadersData() {
 
 export async function getGamesData() {
     return JSON.stringify(await makeAPICall(hockeyGamesURL));
+}
+
+//functions for discord
+export async function getDailySchedule() {
+
+
+    //get data from API
+    const dataSchedule =  await makeAPICall(hockeyGamesURL);
+
+    //get the games for today
+    var dateToday = getTodaysDate();
+    console.log(dateToday);
+
+    const todaysGames = dataSchedule.SiteKit.Scorebar.filter(game => game.GameDateISO8601.split('T')[0] === dateToday);
+
+    //create string to send
+    var output = "# PWHL Games for " + dateToday + "\n\n";
+    var gameTime = ''
+
+    //loop through the games and display the data
+    //check for null first
+    if(todaysGames.length === 0) {
+        output += "No games today :'( \n";
+        return output;
+    }
+    for(var i = 0; i < todaysGames.length; i++) {
+        output += todaysGames[i].VisitorLongName + " at " + todaysGames[i].HomeLongName;
+        
+        //try to convert time to central time
+        try {
+            gameTime = new Date(todaysGames[i].GameDateISO8601).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit' });
+            output += " at " + gameTime + " CT";
+        } catch(e){
+            //do nothing
+        } finally{
+            output += "\n";
+        }
+    }
+  
+    return output;
 }

@@ -64,7 +64,7 @@ export async function getDailySchedule() {
         return output;
     }
     for(var i = 0; i < todaysGames.length; i++) {
-        output += todaysGames[i].VisitorLongName + " at " + todaysGames[i].HomeLongName;
+        output += todaysGames[i].VisitorCode + " at " + todaysGames[i].HomeCode;
         
         //try to convert time to central time
         try {
